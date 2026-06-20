@@ -65,6 +65,9 @@ export default function App() {
   const [pastedJson, setPastedJson] = useState<string>(DEFAULT_JSON);
   const [rootTypeName, setRootTypeName] = useState<string>('RootObject');
 
+  // Mobile view toggle state
+  const [mobileActiveView, setMobileActiveView] = useState<'input' | 'output'>('input');
+
   // Light / Dark Theme State
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
@@ -449,45 +452,45 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen max-h-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] transition-colors duration-200 font-sans">
       {/* Header bar */}
-      <header className="flex items-center justify-between px-6 py-4 bg-[var(--bg-secondary)] border-b border-[var(--border-color)] transition-colors duration-200">
+      <header className="flex flex-col md:flex-row md:items-center justify-between px-6 py-4 bg-[var(--bg-secondary)] border-b border-[var(--border-color)] gap-4 transition-colors duration-200">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md">
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 shadow-md shrink-0">
             <Cpu className="text-white" size={20} />
           </div>
           <div>
-            <h1 className="text-lg font-bold tracking-tight flex items-center gap-2">
+            <h1 className="text-base md:text-lg font-bold tracking-tight flex items-center gap-2">
               Codegenic
               <span className="px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-300 rounded border border-purple-500/30">
                 v1.3.0
               </span>
             </h1>
-            <p className="text-xs text-[var(--text-secondary)]">
+            <p className="text-[10px] md:text-xs text-[var(--text-secondary)]">
               Generate Flawless API Request Code and Typed Models Instantly.
             </p>
           </div>
         </div>
 
         {/* Global Controls */}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 md:gap-4">
           {/* Target Root Object Name */}
-          <div className="flex items-center gap-2">
-            <label className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">Root Name:</label>
+          <div className="flex items-center gap-2 flex-1 sm:flex-none min-w-[120px]">
+            <label className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">Root:</label>
             <input
               type="text"
               value={rootTypeName}
               onChange={(e) => setRootTypeName(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
               placeholder="RootObject"
-              className="px-2.5 py-1 text-xs font-mono bg-[var(--bg-input)] border border-[var(--border-color)] rounded focus:outline-none focus:border-indigo-500 text-[var(--text-primary)] w-36 transition-colors duration-200"
+              className="px-2.5 py-1 text-xs font-mono bg-[var(--bg-input)] border border-[var(--border-color)] rounded focus:outline-none focus:border-indigo-500 text-[var(--text-primary)] w-full sm:w-28 transition-colors duration-200"
             />
           </div>
 
           {/* Language Selector Dropdown */}
-          <div className="flex items-center gap-2">
-            <label className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">Target Language:</label>
+          <div className="flex items-center gap-2 flex-1 sm:flex-none min-w-[150px]">
+            <label className="text-xs font-semibold text-[var(--text-secondary)] whitespace-nowrap">Lang:</label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value as TargetLanguage)}
-              className="px-3 py-1 text-xs font-semibold bg-[var(--bg-input)] border border-[var(--border-color)] rounded focus:outline-none focus:border-indigo-500 text-[var(--text-primary)] cursor-pointer transition-colors duration-200"
+              className="px-2 py-1 text-xs font-semibold bg-[var(--bg-input)] border border-[var(--border-color)] rounded focus:outline-none focus:border-indigo-500 text-[var(--text-primary)] cursor-pointer transition-colors duration-200 w-full"
             >
               <option value="typescript">TypeScript (Axios)</option>
               <option value="javascript">JavaScript ES6+ (Axios)</option>
@@ -503,11 +506,12 @@ export default function App() {
             </select>
           </div>
 
-          {/* Auth widget status */}
-          <div className="flex items-center gap-2">
+          {/* Actions panel */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Auth widget status */}
             {currentUser ? (
-              <div className="flex items-center gap-2 bg-[var(--bg-primary)] border border-[var(--border-color)] pl-2.5 pr-1.5 py-1 rounded-lg">
-                <span className="text-[11px] font-semibold text-[var(--text-secondary)]">
+              <div className="flex items-center gap-1.5 bg-[var(--bg-primary)] border border-[var(--border-color)] pl-2.5 pr-1.5 py-1 rounded-lg">
+                <span className="text-[10px] font-semibold text-[var(--text-secondary)] max-w-[80px] sm:max-w-none truncate">
                   {currentUser.email}
                 </span>
                 <button
@@ -525,38 +529,66 @@ export default function App() {
                   setAuthError(null);
                   setIsAuthOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-all cursor-pointer whitespace-nowrap"
               >
-                <User size={13} />
-                Sign In (Optional)
+                <User size={12} />
+                Sign In
               </button>
             )}
+
+            {/* Settings Modal Button */}
+            <button
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-colors duration-200 cursor-pointer"
+              title="Firebase Project configurations"
+            >
+              <Settings size={14} />
+            </button>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-colors duration-200 cursor-pointer"
+              title="Toggle color theme"
+            >
+              {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
           </div>
-
-          {/* Settings Modal Button */}
-          <button
-            onClick={() => setIsSettingsOpen(true)}
-            className="p-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-colors duration-200 cursor-pointer"
-            title="Firebase Project configurations"
-          >
-            <Settings size={15} />
-          </button>
-
-          {/* Theme Toggle Button */}
-          <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="p-1.5 rounded-lg border border-[var(--border-color)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-editor-header)] text-[var(--text-primary)] transition-colors duration-200 cursor-pointer"
-            title="Toggle color theme"
-          >
-            {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
-          </button>
         </div>
       </header>
+
+      {/* Mobile View Toggle Bar */}
+      <div className="flex md:hidden border-b border-[var(--border-color)] bg-[var(--bg-editor-header)] p-1.5 gap-1 transition-colors duration-200 shrink-0">
+        <button
+          onClick={() => setMobileActiveView('input')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${
+            mobileActiveView === 'input'
+              ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-color)]'
+              : 'text-[var(--text-secondary)]'
+          }`}
+        >
+          <Settings size={13} />
+          Configure Inputs
+        </button>
+        <button
+          onClick={() => setMobileActiveView('output')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${
+            mobileActiveView === 'output'
+              ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-color)]'
+              : 'text-[var(--text-secondary)]'
+          }`}
+        >
+          <Code2 size={13} />
+          View Generated Code
+        </button>
+      </div>
 
       {/* Main Content Workspace Split */}
       <main className="flex-1 flex overflow-hidden">
         {/* Left Column: Inputs (38% width) */}
-        <section className="w-[38%] border-r border-[var(--border-color)] bg-[var(--bg-secondary)] flex flex-col overflow-hidden transition-colors duration-200">
+        <section className={`w-full md:w-[38%] border-b md:border-b-0 md:border-r border-[var(--border-color)] bg-[var(--bg-secondary)] flex flex-col overflow-hidden transition-colors duration-200 ${
+          mobileActiveView === 'input' ? 'flex' : 'hidden md:flex'
+        }`}>
           {/* Tab Selector Header */}
           <div className="flex border-b border-[var(--border-color)] bg-[var(--bg-editor-header)] p-1.5 gap-1 transition-colors duration-200">
             <button
@@ -850,7 +882,9 @@ export default function App() {
         </section>
 
         {/* Right Column: Unified Code Outputs (62% width merged) */}
-        <section className="flex-1 flex overflow-hidden bg-[var(--bg-primary)] p-5 transition-colors duration-200">
+        <section className={`flex-1 flex overflow-hidden bg-[var(--bg-primary)] p-3 md:p-5 transition-colors duration-200 ${
+          mobileActiveView === 'output' ? 'flex' : 'hidden md:flex'
+        }`}>
           <div className="flex-1 h-full min-w-0">
             <CodeEditorMock
               code={unifiedCode}
@@ -865,8 +899,8 @@ export default function App() {
 
       {/* Separated Data Model Code Popup Modal Overlay */}
       {isModelModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-none">
-          <div className="w-full max-w-4xl h-[82vh] flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 animate-none">
+          <div className="w-[95%] md:w-full md:max-w-4xl h-[90vh] md:h-[82vh] flex flex-col bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)] bg-[var(--bg-editor-header)] transition-colors duration-200">
               <div className="flex items-center gap-3">
@@ -907,8 +941,8 @@ export default function App() {
 
       {/* Firebase Configurations Credentials Settings Modal */}
       {isSettingsOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-none">
-          <div className="w-full max-w-md bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 animate-none">
+          <div className="w-[95%] sm:w-full max-w-md bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)] bg-[var(--bg-editor-header)]">
               <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <Settings size={15} />
@@ -1008,8 +1042,8 @@ export default function App() {
 
       {/* Optional Firebase Credentials Auth Sign In / Up Modal */}
       {isAuthOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-6 animate-none">
-          <div className="w-full max-w-md bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 sm:p-6 animate-none">
+          <div className="w-[95%] sm:w-full max-w-md bg-[var(--bg-secondary)] border border-[var(--border-color)] rounded-2xl shadow-2xl overflow-hidden transition-all duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[var(--border-color)] bg-[var(--bg-editor-header)]">
               <h3 className="text-sm font-bold text-[var(--text-primary)] flex items-center gap-2">
                 <User size={15} />
