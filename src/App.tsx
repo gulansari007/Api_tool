@@ -561,22 +561,20 @@ export default function App() {
       <div className="flex md:hidden border-b border-[var(--border-color)] bg-[var(--bg-editor-header)] p-1.5 gap-1 transition-colors duration-200 shrink-0">
         <button
           onClick={() => setMobileActiveView('input')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${
-            mobileActiveView === 'input'
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${mobileActiveView === 'input'
               ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-color)]'
               : 'text-[var(--text-secondary)]'
-          }`}
+            }`}
         >
           <Settings size={13} />
           Configure Inputs
         </button>
         <button
           onClick={() => setMobileActiveView('output')}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${
-            mobileActiveView === 'output'
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold rounded-md transition-colors cursor-pointer ${mobileActiveView === 'output'
               ? 'bg-[var(--bg-secondary)] text-[var(--text-primary)] shadow-sm border border-[var(--border-color)]'
               : 'text-[var(--text-secondary)]'
-          }`}
+            }`}
         >
           <Code2 size={13} />
           View Generated Code
@@ -586,9 +584,8 @@ export default function App() {
       {/* Main Content Workspace Split */}
       <main className="flex-1 flex overflow-hidden">
         {/* Left Column: Inputs (38% width) */}
-        <section className={`w-full md:w-[38%] border-b md:border-b-0 md:border-r border-[var(--border-color)] bg-[var(--bg-secondary)] flex flex-col overflow-hidden transition-colors duration-200 ${
-          mobileActiveView === 'input' ? 'flex' : 'hidden md:flex'
-        }`}>
+        <section className={`w-full md:w-[38%] border-b md:border-b-0 md:border-r border-[var(--border-color)] bg-[var(--bg-secondary)] flex flex-col overflow-hidden transition-colors duration-200 ${mobileActiveView === 'input' ? 'flex' : 'hidden md:flex'
+          }`}>
           {/* Tab Selector Header */}
           <div className="flex border-b border-[var(--border-color)] bg-[var(--bg-editor-header)] p-1.5 gap-1 transition-colors duration-200">
             <button
@@ -882,9 +879,8 @@ export default function App() {
         </section>
 
         {/* Right Column: Unified Code Outputs (62% width merged) */}
-        <section className={`flex-1 flex overflow-hidden bg-[var(--bg-primary)] p-3 md:p-5 transition-colors duration-200 ${
-          mobileActiveView === 'output' ? 'flex' : 'hidden md:flex'
-        }`}>
+        <section className={`flex-1 flex overflow-hidden bg-[var(--bg-primary)] p-3 md:p-5 transition-colors duration-200 ${mobileActiveView === 'output' ? 'flex' : 'hidden md:flex'
+          }`}>
           <div className="flex-1 h-full min-w-0">
             <CodeEditorMock
               code={unifiedCode}
